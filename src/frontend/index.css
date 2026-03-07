@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Fonts ──────────────────────────────────────────────────── */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque[opsz,wdth,wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Mona Sans";
+  src: url("/assets/fonts/Mona-Sans.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.375rem;
+
+    /* ── RDX ESPORTS Dark Theme ── */
+    --background: 0.1 0 0;
+    --foreground: 0.95 0.02 85;
+    --card: 0.12 0.005 270;
+    --card-foreground: 0.93 0.02 85;
+    --popover: 0.14 0.005 270;
+    --popover-foreground: 0.93 0.02 85;
+
+    /* Primary: Electric gold */
+    --primary: 0.78 0.18 75;
+    --primary-foreground: 0.1 0 0;
+
+    /* Secondary: Deep crimson red */
+    --secondary: 0.45 0.22 22;
+    --secondary-foreground: 0.95 0.02 85;
+
+    --muted: 0.18 0.01 270;
+    --muted-foreground: 0.55 0.03 270;
+
+    /* Accent: Neon red */
+    --accent: 0.55 0.25 22;
+    --accent-foreground: 0.98 0 0;
+
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 0.985 0 0;
+
+    --border: 0.25 0.04 270;
+    --input: 0.22 0.03 270;
+    --ring: 0.78 0.18 75;
+
+    --chart-1: 0.78 0.18 75;
+    --chart-2: 0.55 0.25 22;
+    --chart-3: 0.65 0.22 200;
+    --chart-4: 0.70 0.20 160;
+    --chart-5: 0.60 0.20 300;
+
+    --sidebar: 0.12 0.005 270;
+    --sidebar-foreground: 0.93 0.02 85;
+    --sidebar-primary: 0.78 0.18 75;
+    --sidebar-primary-foreground: 0.1 0 0;
+    --sidebar-accent: 0.55 0.25 22;
+    --sidebar-accent-foreground: 0.98 0 0;
+    --sidebar-border: 0.25 0.04 270;
+    --sidebar-ring: 0.78 0.18 75;
+
+    /* Custom RDX tokens */
+    --gold: 0.78 0.18 75;
+    --gold-bright: 0.88 0.20 80;
+    --crimson: 0.55 0.25 22;
+    --crimson-bright: 0.62 0.28 18;
+    --dark-base: 0.08 0 0;
+    --dark-surface: 0.12 0.005 270;
+    --dark-elevated: 0.16 0.01 270;
+    --glow-gold: 0 0 20px oklch(0.78 0.18 75 / 0.6), 0 0 40px oklch(0.78 0.18 75 / 0.3);
+    --glow-red: 0 0 20px oklch(0.55 0.25 22 / 0.6), 0 0 40px oklch(0.55 0.25 22 / 0.3);
+    --glow-subtle: 0 0 10px oklch(0.78 0.18 75 / 0.3);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Mona Sans", sans-serif;
+    background-color: oklch(var(--background));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ── Global utilities ──────────────────────────────────────── */
+@layer utilities {
+  .font-display {
+    font-family: "Bricolage Grotesque", sans-serif;
+  }
+
+  .text-gold {
+    color: oklch(var(--gold));
+  }
+
+  .text-crimson {
+    color: oklch(var(--crimson-bright));
+  }
+
+  .bg-dark-base {
+    background-color: oklch(var(--dark-base));
+  }
+
+  .bg-dark-surface {
+    background-color: oklch(var(--dark-surface));
+  }
+
+  .bg-dark-elevated {
+    background-color: oklch(var(--dark-elevated));
+  }
+
+  .glow-gold {
+    box-shadow: var(--glow-gold);
+  }
+
+  .glow-red {
+    box-shadow: var(--glow-red);
+  }
+
+  .glow-text-gold {
+    text-shadow: 0 0 20px oklch(0.88 0.20 80 / 0.8), 0 0 40px oklch(0.78 0.18 75 / 0.5);
+  }
+
+  .glow-text-red {
+    text-shadow: 0 0 20px oklch(0.62 0.28 18 / 0.9), 0 0 40px oklch(0.55 0.25 22 / 0.6);
+  }
+
+  .border-gold {
+    border-color: oklch(var(--gold) / 0.6);
+  }
+
+  .border-crimson {
+    border-color: oklch(var(--crimson-bright) / 0.7);
+  }
+
+  .rdx-card {
+    background: oklch(var(--dark-surface));
+    border: 1px solid oklch(var(--gold) / 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rdx-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      oklch(0.78 0.18 75 / 0.04) 0%,
+      transparent 50%,
+      oklch(0.55 0.25 22 / 0.04) 100%
+    );
+    pointer-events: none;
+  }
+
+  .hex-pattern {
+    background-image:
+      radial-gradient(circle at 25% 25%, oklch(0.55 0.25 22 / 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, oklch(0.78 0.18 75 / 0.06) 0%, transparent 50%);
+  }
+
+  .scan-line::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, oklch(0.78 0.18 75 / 0.8), transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  @keyframes scan {
+    0% { top: 0; opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  @keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 10px oklch(0.78 0.18 75 / 0.4), 0 0 20px oklch(0.78 0.18 75 / 0.2); }
+    50% { box-shadow: 0 0 20px oklch(0.78 0.18 75 / 0.7), 0 0 40px oklch(0.78 0.18 75 / 0.4); }
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 10px oklch(0.55 0.25 22 / 0.4), 0 0 20px oklch(0.55 0.25 22 / 0.2); }
+    50% { box-shadow: 0 0 20px oklch(0.55 0.25 22 / 0.7), 0 0 40px oklch(0.55 0.25 22 / 0.4); }
+  }
+
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.7; }
+    97% { opacity: 1; }
+    98% { opacity: 0.6; }
+  }
+
+  .animate-pulse-gold {
+    animation: pulse-gold 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-red {
+    animation: pulse-red 2s ease-in-out infinite;
+  }
+
+  .animate-flicker {
+    animation: flicker 4s ease-in-out infinite;
+  }
+}

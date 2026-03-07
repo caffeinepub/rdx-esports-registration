@@ -6,11 +6,8 @@ import {
   AlertTriangle,
   ChevronDown,
   CreditCard,
-  Gamepad2,
-  Link,
-  MessageSquare,
+  MessageCircle,
   Phone,
-  Shield,
   User,
   Users,
   Zap,
@@ -34,20 +31,23 @@ const RULES = [
   "ONLY FACE TO FACE",
 ];
 
+const WHATSAPP_GROUP_LINK =
+  "https://chat.whatsapp.com/K8cAEuRcQUZF00gjiPAku7?mode=gi_t";
+
 const SPONSORS = [
   {
     name: "TG ESPORTS",
-    icon: <Gamepad2 className="w-10 h-10" />,
+    logo: "/assets/uploads/IMG-20260307-WA0006-1.jpg",
     color: "oklch(0.55 0.25 22)",
   },
   {
     name: "KD PAIYAN YT",
-    icon: <Zap className="w-10 h-10" />,
+    logo: "/assets/uploads/20260205_183034-3.png",
     color: "oklch(0.78 0.18 75)",
   },
   {
     name: "TG PANEL",
-    icon: <Shield className="w-10 h-10" />,
+    logo: "/assets/uploads/IMG-20260307-WA0005-2.jpg",
     color: "oklch(0.55 0.25 22)",
   },
 ];
@@ -73,14 +73,9 @@ export function HomePage() {
 
   // Form state
   const [teamName, setTeamName] = useState("");
-  const [response, setResponse] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [referredBy, setReferredBy] = useState("");
-  const [whatsappLink, setWhatsappLink] = useState("");
   const [teamLogoFile, setTeamLogoFile] = useState<File | null>(null);
-  const [playerPhotoFile, setPlayerPhotoFile] = useState<File | null>(null);
-  const [paymentScreenshotFile, setPaymentScreenshotFile] =
-    useState<File | null>(null);
   const [proofOfPaymentFile, setProofOfPaymentFile] = useState<File | null>(
     null,
   );
@@ -92,13 +87,9 @@ export function HomePage() {
 
   const resetForm = () => {
     setTeamName("");
-    setResponse("");
     setPhoneNumber("");
     setReferredBy("");
-    setWhatsappLink("");
     setTeamLogoFile(null);
-    setPlayerPhotoFile(null);
-    setPaymentScreenshotFile(null);
     setProofOfPaymentFile(null);
     setFormError(null);
     setConfirmedRegistration(null);
@@ -112,28 +103,20 @@ export function HomePage() {
       setFormError("Team name is required.");
       return;
     }
-    if (!response.trim()) {
-      setFormError("Response/IGN is required.");
-      return;
-    }
     if (!phoneNumber.trim()) {
       setFormError("Phone number is required.");
-      return;
-    }
-    if (!whatsappLink.trim()) {
-      setFormError("WhatsApp link is required.");
       return;
     }
 
     try {
       const reg = await createMutation.mutateAsync({
         teamName: teamName.trim(),
-        response: response.trim(),
+        response: "",
         phoneNumber: phoneNumber.trim(),
-        whatsappLink: whatsappLink.trim(),
+        whatsappLink: WHATSAPP_GROUP_LINK,
         teamLogoFile,
-        playerPhotoFile,
-        paymentScreenshotFile,
+        playerPhotoFile: null,
+        paymentScreenshotFile: null,
         proofOfPaymentFile,
         referredBy: referredBy.trim() || null,
       });
@@ -187,7 +170,7 @@ export function HomePage() {
             className="flex justify-center mb-4"
           >
             <img
-              src="/assets/generated/rdx-esports-logo-transparent.dim_400x400.png"
+              src="/assets/uploads/Screenshot_20260110_215327-1.jpg"
               alt="RDX ESPORTS"
               className="w-28 h-28 md:w-36 md:h-36 object-contain"
               style={{
@@ -343,15 +326,17 @@ export function HomePage() {
                 }}
               >
                 <div
-                  className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-4"
+                  className="w-24 h-24 rounded-full mx-auto flex items-center justify-center mb-4 overflow-hidden"
                   style={{
-                    background: `radial-gradient(circle, ${sponsor.color} / 0.2, ${sponsor.color} / 0.05)`,
-                    border: `2px solid ${sponsor.color} / 0.5`,
-                    boxShadow: `0 0 20px ${sponsor.color} / 0.3`,
-                    color: sponsor.color,
+                    border: `2px solid ${sponsor.color}`,
+                    boxShadow: `0 0 20px ${sponsor.color} / 0.5`,
                   }}
                 >
-                  <div style={{ color: sponsor.color }}>{sponsor.icon}</div>
+                  <img
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <h3
                   className="font-display font-black uppercase tracking-widest text-base"
@@ -509,40 +494,13 @@ export function HomePage() {
                 />
               </div>
 
-              {/* Response / IGN */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="response"
-                  className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gold/80"
-                >
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  Response / IGN <span className="text-crimson">*</span>
-                </Label>
-                <Input
-                  id="response"
-                  data-ocid="registration.response.input"
-                  value={response}
-                  onChange={(e) => setResponse(e.target.value)}
-                  placeholder="Your in-game name"
-                  required
-                  className="bg-dark-elevated border-border/50 focus:border-gold/50"
-                />
-              </div>
-
-              {/* Team Logo & Player Photo */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Team Logo */}
+              <div className="grid grid-cols-1 gap-6">
                 <FileUpload
                   label="Team Logo"
                   value={teamLogoFile}
                   onChange={setTeamLogoFile}
                   uploadButtonId="registration.team_logo.upload_button"
-                  optional
-                />
-                <FileUpload
-                  label="Player Photo"
-                  value={playerPhotoFile}
-                  onChange={setPlayerPhotoFile}
-                  uploadButtonId="registration.player_photo.upload_button"
                   optional
                 />
               </div>
@@ -590,25 +548,40 @@ export function HomePage() {
                 />
               </div>
 
-              {/* WhatsApp Link */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="whatsappLink"
-                  className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gold/80"
+              {/* WhatsApp Join */}
+              <div
+                className="rounded-lg p-5 space-y-3"
+                style={{
+                  background: "oklch(0.25 0.08 145 / 0.15)",
+                  border: "1px solid oklch(0.55 0.18 145 / 0.4)",
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4 text-green-400" />
+                  <span className="font-display text-xs uppercase tracking-widest text-green-400/80 font-semibold">
+                    Join Our WhatsApp Group
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Click below to join the official tournament WhatsApp group for
+                  updates and announcements.
+                </p>
+                <a
+                  data-ocid="registration.whatsapp.button"
+                  href={WHATSAPP_GROUP_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-md font-display font-bold uppercase tracking-widest text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, oklch(0.50 0.18 145), oklch(0.60 0.20 148))",
+                    color: "oklch(0.98 0 0)",
+                    boxShadow: "0 0 15px oklch(0.50 0.18 145 / 0.4)",
+                  }}
                 >
-                  <Link className="w-3.5 h-3.5" />
-                  WhatsApp Link to Join <span className="text-crimson">*</span>
-                </Label>
-                <Input
-                  id="whatsappLink"
-                  data-ocid="registration.whatsapp.input"
-                  type="url"
-                  value={whatsappLink}
-                  onChange={(e) => setWhatsappLink(e.target.value)}
-                  placeholder="https://chat.whatsapp.com/..."
-                  required
-                  className="bg-dark-elevated border-border/50 focus:border-gold/50"
-                />
+                  <MessageCircle className="w-4 h-4" />
+                  JOIN WHATSAPP GROUP
+                </a>
               </div>
 
               {/* Payment section */}
@@ -625,14 +598,28 @@ export function HomePage() {
                     Payment Details
                   </span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <FileUpload
-                    label="GPay Screenshot"
-                    value={paymentScreenshotFile}
-                    onChange={setPaymentScreenshotFile}
-                    uploadButtonId="registration.payment.upload_button"
-                    optional
-                  />
+
+                {/* Constant GPay QR Code */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-gold/70">
+                    Scan to Pay (GPay / UPI)
+                  </p>
+                  <div
+                    className="rounded-lg overflow-hidden"
+                    style={{ border: "1px solid oklch(0.78 0.18 75 / 0.25)" }}
+                  >
+                    <img
+                      src="/assets/uploads/IMG-20260307-WA0021-1.jpg"
+                      alt="GPay QR Code"
+                      className="w-full max-w-xs mx-auto block object-contain"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">
+                    UPI ID: 8667720073@fam
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6">
                   <FileUpload
                     label="Proof of Payment"
                     value={proofOfPaymentFile}

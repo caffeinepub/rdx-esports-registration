@@ -205,13 +205,6 @@ export function ConfirmationCard({
               }}
             />
 
-            {/* Footer signature */}
-            <div className="text-center space-y-1">
-              <p className="text-xs text-muted-foreground">
-                Designed by NAVEEN
-              </p>
-            </div>
-
             {/* CTA */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}

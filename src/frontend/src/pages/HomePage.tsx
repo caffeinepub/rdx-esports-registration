@@ -170,8 +170,8 @@ export function HomePage() {
             className="flex justify-center mb-4"
           >
             <img
-              src="/assets/uploads/Screenshot_20260110_215327-1.jpg"
-              alt="RDX ESPORTS"
+              src="/assets/uploads/20260307_210819-1.png"
+              alt="INFERNO'26"
               className="w-28 h-28 md:w-36 md:h-36 object-contain"
               style={{
                 filter: "drop-shadow(0 0 20px oklch(0.78 0.18 75 / 0.5))",
@@ -203,7 +203,7 @@ export function HomePage() {
               filter: "drop-shadow(0 0 30px oklch(0.78 0.18 75 / 0.4))",
             }}
           >
-            RDX ESPORTS
+            INFERNO'26
           </motion.h1>
 
           <motion.div
@@ -609,7 +609,7 @@ export function HomePage() {
                     style={{ border: "1px solid oklch(0.78 0.18 75 / 0.25)" }}
                   >
                     <img
-                      src="/assets/uploads/IMG-20260307-WA0021-1.jpg"
+                      src="/assets/uploads/IMG-20260307-WA0021-1--1.jpg"
                       alt="GPay QR Code"
                       className="w-full max-w-xs mx-auto block object-contain"
                     />

@@ -9,8 +9,11 @@ import {
   ShieldCheck,
   UserCheck,
   Users,
+  X,
+  ZoomIn,
 } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
 import type { Registration } from "../backend";
 import { useListRegistrations } from "../hooks/useQueries";
 
@@ -25,31 +28,110 @@ function formatDate(ts: bigint): string {
   return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
 }
 
+function ImagePreviewModal({
+  src,
+  label,
+  onClose,
+}: { src: string; label: string; onClose: () => void }) {
+  return (
+    <AnimatePresence>
+      <motion.div
+        data-ocid="admin.image_preview.modal"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{ background: "oklch(0.05 0 0 / 0.92)" }}
+      >
+        <motion.div
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.85, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative max-w-lg w-full rounded-xl overflow-hidden"
+          style={{
+            border: "1px solid oklch(0.78 0.18 75 / 0.4)",
+            boxShadow: "0 0 40px oklch(0.78 0.18 75 / 0.2)",
+          }}
+        >
+          <div
+            className="flex items-center justify-between px-4 py-3"
+            style={{ background: "oklch(0.12 0.005 270)" }}
+          >
+            <span className="text-xs font-display uppercase tracking-widest text-gold/80 font-semibold">
+              {label}
+            </span>
+            <button
+              type="button"
+              data-ocid="admin.image_preview.close_button"
+              onClick={onClose}
+              className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <img
+            src={src}
+            alt={label}
+            className="w-full object-contain max-h-[70vh]"
+            style={{ background: "oklch(0.08 0 0)" }}
+          />
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function ImageThumb({
   blob,
   label,
 }: { blob: { getDirectURL(): string } | undefined; label: string }) {
+  const [preview, setPreview] = useState(false);
+
   if (!blob) {
     return (
       <div
-        className="w-10 h-10 rounded flex items-center justify-center"
+        className="w-14 h-14 rounded flex items-center justify-center"
         style={{
           background: "oklch(0.18 0.01 270)",
           border: "1px solid oklch(0.25 0.04 270)",
         }}
       >
-        <ImageIcon className="w-4 h-4 text-muted-foreground" />
+        <ImageIcon className="w-5 h-5 text-muted-foreground" />
       </div>
     );
   }
+
+  const url = blob.getDirectURL();
+
   return (
-    <img
-      src={blob.getDirectURL()}
-      alt={label}
-      className="w-10 h-10 rounded object-cover"
-      style={{ border: "1px solid oklch(0.78 0.18 75 / 0.3)" }}
-      title={label}
-    />
+    <>
+      <button
+        type="button"
+        onClick={() => setPreview(true)}
+        className="relative group focus:outline-none"
+        title={`View ${label}`}
+      >
+        <img
+          src={url}
+          alt={label}
+          className="w-14 h-14 rounded object-cover transition-all duration-200 group-hover:brightness-75"
+          style={{ border: "1px solid oklch(0.78 0.18 75 / 0.3)" }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <ZoomIn className="w-5 h-5 text-white drop-shadow" />
+        </div>
+      </button>
+      {preview && (
+        <ImagePreviewModal
+          src={url}
+          label={label}
+          onClose={() => setPreview(false)}
+        />
+      )}
+    </>
   );
 }
 
@@ -130,28 +212,25 @@ function RegistrationCard({
       </div>
 
       {/* Image row */}
-      <div className="flex items-center gap-3 pt-1">
+      <div className="flex items-center gap-4 pt-1 flex-wrap">
         <span className="text-xs text-muted-foreground uppercase tracking-widest">
-          Files:
+          Photos:
         </span>
-        <div className="flex gap-2">
-          <div title="Player Photo">
-            <ImageThumb
-              blob={registration.playerPhotoUrl}
-              label="Player Photo"
-            />
+        <div className="flex gap-3 flex-wrap">
+          <div className="flex flex-col items-center gap-1">
+            <ImageThumb blob={registration.teamLogoUrl} label="Team Logo" />
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+              Logo
+            </span>
           </div>
-          <div title="Payment Screenshot">
-            <ImageThumb
-              blob={registration.paymentScreenshotUrl}
-              label="Payment Screenshot"
-            />
-          </div>
-          <div title="Proof of Payment">
+          <div className="flex flex-col items-center gap-1">
             <ImageThumb
               blob={registration.proofOfPaymentUrl}
               label="Proof of Payment"
             />
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+              Payment
+            </span>
           </div>
         </div>
       </div>

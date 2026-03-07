@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
   AlertTriangle,
+  CheckCircle2,
   ChevronDown,
   CreditCard,
   MessageCircle,
@@ -79,6 +81,7 @@ export function HomePage() {
   const [proofOfPaymentFile, setProofOfPaymentFile] = useState<File | null>(
     null,
   );
+  const [whatsappJoined, setWhatsappJoined] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
   const scrollToForm = () => {
@@ -91,6 +94,7 @@ export function HomePage() {
     setReferredBy("");
     setTeamLogoFile(null);
     setProofOfPaymentFile(null);
+    setWhatsappJoined(false);
     setFormError(null);
     setConfirmedRegistration(null);
   };
@@ -103,8 +107,24 @@ export function HomePage() {
       setFormError("Team name is required.");
       return;
     }
+    if (!teamLogoFile) {
+      setFormError(
+        "Team Logo image is required. Please upload your team logo.",
+      );
+      return;
+    }
     if (!phoneNumber.trim()) {
       setFormError("Phone number is required.");
+      return;
+    }
+    if (!proofOfPaymentFile) {
+      setFormError(
+        "Proof of Payment image is required. Please upload your payment screenshot.",
+      );
+      return;
+    }
+    if (!whatsappJoined) {
+      setFormError("You must join the WhatsApp group before submitting.");
       return;
     }
 
@@ -496,13 +516,17 @@ export function HomePage() {
 
               {/* Team Logo */}
               <div className="grid grid-cols-1 gap-6">
-                <FileUpload
-                  label="Team Logo"
-                  value={teamLogoFile}
-                  onChange={setTeamLogoFile}
-                  uploadButtonId="registration.team_logo.upload_button"
-                  optional
-                />
+                <div className="space-y-1">
+                  <FileUpload
+                    label="Team Logo"
+                    value={teamLogoFile}
+                    onChange={setTeamLogoFile}
+                    uploadButtonId="registration.team_logo.upload_button"
+                  />
+                  <p className="text-xs text-crimson flex items-center gap-1">
+                    <span className="font-bold">*</span> Required
+                  </p>
+                </div>
               </div>
 
               {/* Phone Number */}
@@ -553,7 +577,7 @@ export function HomePage() {
                 className="rounded-lg p-5 space-y-3"
                 style={{
                   background: "oklch(0.25 0.08 145 / 0.15)",
-                  border: "1px solid oklch(0.55 0.18 145 / 0.4)",
+                  border: `1px solid ${whatsappJoined ? "oklch(0.55 0.18 145 / 0.8)" : "oklch(0.55 0.18 145 / 0.4)"}`,
                 }}
               >
                 <div className="flex items-center gap-2">
@@ -561,10 +585,13 @@ export function HomePage() {
                   <span className="font-display text-xs uppercase tracking-widest text-green-400/80 font-semibold">
                     Join Our WhatsApp Group
                   </span>
+                  <span className="text-crimson text-xs font-bold">
+                    * Required
+                  </span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Click below to join the official tournament WhatsApp group for
-                  updates and announcements.
+                  You must join the official tournament WhatsApp group before
+                  submitting. Click below to join, then tick the checkbox.
                 </p>
                 <a
                   data-ocid="registration.whatsapp.button"
@@ -582,6 +609,28 @@ export function HomePage() {
                   <MessageCircle className="w-4 h-4" />
                   JOIN WHATSAPP GROUP
                 </a>
+                <div className="flex items-center gap-3 pt-1">
+                  <Checkbox
+                    id="whatsapp-confirm"
+                    data-ocid="registration.whatsapp.checkbox"
+                    checked={whatsappJoined}
+                    onCheckedChange={(checked) => setWhatsappJoined(!!checked)}
+                    style={{
+                      borderColor: whatsappJoined
+                        ? "oklch(0.55 0.18 145)"
+                        : undefined,
+                    }}
+                  />
+                  <label
+                    htmlFor="whatsapp-confirm"
+                    className="text-xs text-green-300 cursor-pointer select-none flex items-center gap-1"
+                  >
+                    {whatsappJoined && (
+                      <CheckCircle2 className="w-3 h-3 text-green-400" />
+                    )}
+                    I have joined the WhatsApp group
+                  </label>
+                </div>
               </div>
 
               {/* Payment section */}
@@ -620,14 +669,19 @@ export function HomePage() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6">
-                  <FileUpload
-                    label="Proof of Payment"
-                    value={proofOfPaymentFile}
-                    onChange={setProofOfPaymentFile}
-                    uploadButtonId="registration.proof.upload_button"
-                    dropzoneId="registration.proof.dropzone"
-                    optional
-                  />
+                  <div className="space-y-1">
+                    <FileUpload
+                      label="Proof of Payment"
+                      value={proofOfPaymentFile}
+                      onChange={setProofOfPaymentFile}
+                      uploadButtonId="registration.proof.upload_button"
+                      dropzoneId="registration.proof.dropzone"
+                    />
+                    <p className="text-xs text-crimson flex items-center gap-1">
+                      <span className="font-bold">*</span> Required – upload
+                      your payment screenshot
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -709,7 +763,7 @@ export function HomePage() {
               }}
             />
             <p className="text-xs font-display uppercase tracking-widest text-gold/50">
-              DESIGNED BY NAVEEN
+              DESIGNED BY BHUVI
             </p>
             <div
               className="h-px w-12"

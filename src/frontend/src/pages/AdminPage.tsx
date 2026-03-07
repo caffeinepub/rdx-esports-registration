@@ -1,4 +1,16 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
 import {
@@ -7,6 +19,7 @@ import {
   Image as ImageIcon,
   Phone,
   ShieldCheck,
+  Trash2,
   UserCheck,
   Users,
   X,
@@ -15,7 +28,10 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import type { Registration } from "../backend";
-import { useListRegistrations } from "../hooks/useQueries";
+import {
+  useDeleteRegistration,
+  useListRegistrations,
+} from "../hooks/useQueries";
 
 function formatDate(ts: bigint): string {
   const ms = Number(ts) / 1_000_000;
@@ -139,6 +155,9 @@ function RegistrationCard({
   registration,
   index,
 }: { registration: Registration; index: number }) {
+  const { mutate: deleteRegistration, isPending: isDeleting } =
+    useDeleteRegistration();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -168,17 +187,74 @@ function RegistrationCard({
                 {registration.id}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">
-              IGN: {registration.response}
-            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Calendar className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
-            {formatDate(registration.registeredAt)}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
+              {formatDate(registration.registeredAt)}
+            </span>
+          </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                data-ocid={`admin.table.row.delete_button.${index + 1}`}
+                className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                disabled={isDeleting}
+                title="Remove registration"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent
+              data-ocid="admin.delete.dialog"
+              style={{
+                background: "oklch(0.12 0.005 270)",
+                border: "1px solid oklch(0.25 0.04 270)",
+              }}
+            >
+              <AlertDialogHeader>
+                <AlertDialogTitle className="font-display font-black uppercase tracking-widest text-foreground">
+                  Remove Registration?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-muted-foreground">
+                  This will permanently remove{" "}
+                  <span className="text-foreground font-semibold">
+                    {registration.teamName}
+                  </span>{" "}
+                  ({registration.id}) from the tournament. This action cannot be
+                  undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  data-ocid="admin.delete.cancel_button"
+                  style={{
+                    background: "oklch(0.18 0.01 270)",
+                    border: "1px solid oklch(0.3 0.04 270)",
+                    color: "oklch(0.85 0.01 270)",
+                  }}
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  data-ocid="admin.delete.confirm_button"
+                  onClick={() => deleteRegistration(registration.id)}
+                  style={{
+                    background: "oklch(0.577 0.245 27 / 0.9)",
+                    border: "1px solid oklch(0.577 0.245 27)",
+                    color: "white",
+                  }}
+                >
+                  Yes, Remove
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 

@@ -38,6 +38,22 @@ export interface CreateRegistrationParams {
   referredBy: string | null;
 }
 
+export function useDeleteRegistration() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation<boolean, Error, string>({
+    mutationFn: async (id: string) => {
+      if (!actor) throw new Error("Backend not available");
+      return actor.deleteRegistration(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["registrations"] });
+      queryClient.invalidateQueries({ queryKey: ["registrationCount"] });
+    },
+  });
+}
+
 export function useCreateRegistration() {
   const { actor } = useActor();
   const queryClient = useQueryClient();

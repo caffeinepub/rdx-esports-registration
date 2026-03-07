@@ -1,10 +1,11 @@
 import Map "mo:core/Map";
-import Runtime "mo:core/Runtime";
 import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   type Registration = {
     id : Text;
@@ -81,6 +82,15 @@ actor {
     registrations.add(registration.id, registration);
     nextId += 1;
     registration;
+  };
+
+  public shared ({ caller }) func deleteRegistration(id : Text) : async Bool {
+    if (registrations.containsKey(id)) {
+      registrations.remove(id);
+      true;
+    } else {
+      false;
+    };
   };
 
   public query ({ caller }) func getRegistration(id : Text) : async ?Registration {

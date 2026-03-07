@@ -29,6 +29,7 @@ export interface Registration {
 }
 export interface backendInterface {
     createRegistration(teamName: string, response: string, phoneNumber: string, whatsappLink: string, teamLogoUrl: ExternalBlob | null, playerPhotoUrl: ExternalBlob | null, paymentScreenshotUrl: ExternalBlob | null, proofOfPaymentUrl: ExternalBlob | null, referredBy: string | null): Promise<Registration>;
+    deleteRegistration(id: string): Promise<boolean>;
     getRegistration(id: string): Promise<Registration | null>;
     getRegistrationCount(): Promise<bigint>;
     listRegistrations(): Promise<Array<Registration>>;

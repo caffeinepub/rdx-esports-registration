@@ -6,14 +6,19 @@ import {
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
+import { useState } from "react";
+import { SplashScreen } from "./components/SplashScreen";
 import { AdminPage } from "./pages/AdminPage";
 import { HomePage } from "./pages/HomePage";
 import { RedirectPage } from "./pages/RedirectPage";
 import { ShortenPage } from "./pages/ShortenPage";
 
-const rootRoute = createRootRoute({
-  component: () => (
+function RootLayout() {
+  const [splashDone, setSplashDone] = useState(false);
+
+  return (
     <>
+      {!splashDone && <SplashScreen onComplete={() => setSplashDone(true)} />}
       <Outlet />
       <Toaster
         position="top-right"
@@ -26,7 +31,11 @@ const rootRoute = createRootRoute({
         }}
       />
     </>
-  ),
+  );
+}
+
+const rootRoute = createRootRoute({
+  component: RootLayout,
 });
 
 const homeRoute = createRoute({

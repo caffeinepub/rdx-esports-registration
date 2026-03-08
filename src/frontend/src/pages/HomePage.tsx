@@ -836,9 +836,14 @@ export function HomePage() {
                   "linear-gradient(90deg, transparent, oklch(0.78 0.18 75 / 0.4))",
               }}
             />
-            <p className="text-xs font-display uppercase tracking-widest text-gold/50">
-              DESIGNED BY BHUVI
-            </p>
+            <div className="flex flex-col items-center gap-0.5">
+              <p className="text-xs font-display uppercase tracking-widest text-gold/50">
+                DESIGNED BY BHUVI
+              </p>
+              <p className="text-xs text-gold/60 tracking-wide">
+                Contact: 9840359396 / 86677 20073
+              </p>
+            </div>
             <div
               className="h-px w-12"
               style={{

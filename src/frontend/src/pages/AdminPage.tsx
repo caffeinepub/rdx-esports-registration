@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
 import {
   Calendar,
+  Download,
   ExternalLink,
   Image as ImageIcon,
   Phone,
@@ -314,6 +315,21 @@ function RegistrationCard({
   );
 }
 
+function downloadTeamNamesCSV(registrations: Registration[]) {
+  const header = "Team Name";
+  const rows = registrations.map((r) => `"${r.teamName.replace(/"/g, '""')}"`);
+  const csvContent = [header, ...rows].join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "registered_teams.csv";
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+  URL.revokeObjectURL(url);
+}
+
 export function AdminPage() {
   const { data: registrations, isLoading, isError } = useListRegistrations();
   const { mutate: deleteAll, isPending: isDeletingAll } =
@@ -382,63 +398,79 @@ export function AdminPage() {
               )}
             </div>
             {registrations && registrations.length > 0 && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    data-ocid="admin.delete_all.open_modal_button"
-                    className="flex items-center gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 border border-destructive/30 font-display font-bold uppercase tracking-wider text-xs px-3 h-8"
-                    disabled={isDeletingAll}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    Remove All
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent
-                  data-ocid="admin.delete_all.dialog"
+              <div className="flex items-center gap-2 flex-wrap">
+                <Button
+                  variant="ghost"
+                  data-ocid="admin.download_sheet.button"
+                  onClick={() => downloadTeamNamesCSV(registrations)}
+                  className="flex items-center gap-2 font-display font-bold uppercase tracking-wider text-xs px-3 h-8"
                   style={{
-                    background: "oklch(0.12 0.005 270)",
-                    border: "1px solid oklch(0.25 0.04 270)",
+                    color: "oklch(0.65 0.2 145)",
+                    border: "1px solid oklch(0.65 0.2 145 / 0.35)",
+                    background: "oklch(0.65 0.2 145 / 0.08)",
                   }}
                 >
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="font-display font-black uppercase tracking-widest text-foreground">
-                      Remove All Registrations?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription className="text-muted-foreground">
-                      This will permanently delete all{" "}
-                      <span className="text-foreground font-semibold">
-                        {registrations.length} team
-                        {registrations.length !== 1 ? "s" : ""}
-                      </span>{" "}
-                      from the tournament. This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel
-                      data-ocid="admin.delete_all.cancel_button"
-                      style={{
-                        background: "oklch(0.18 0.01 270)",
-                        border: "1px solid oklch(0.3 0.04 270)",
-                        color: "oklch(0.85 0.01 270)",
-                      }}
+                  <Download className="w-3.5 h-3.5" />
+                  Download Sheet
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      data-ocid="admin.delete_all.open_modal_button"
+                      className="flex items-center gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 border border-destructive/30 font-display font-bold uppercase tracking-wider text-xs px-3 h-8"
+                      disabled={isDeletingAll}
                     >
-                      Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      data-ocid="admin.delete_all.confirm_button"
-                      onClick={() => deleteAll()}
-                      style={{
-                        background: "oklch(0.577 0.245 27 / 0.9)",
-                        border: "1px solid oklch(0.577 0.245 27)",
-                        color: "white",
-                      }}
-                    >
-                      Yes, Remove All
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Remove All
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent
+                    data-ocid="admin.delete_all.dialog"
+                    style={{
+                      background: "oklch(0.12 0.005 270)",
+                      border: "1px solid oklch(0.25 0.04 270)",
+                    }}
+                  >
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="font-display font-black uppercase tracking-widest text-foreground">
+                        Remove All Registrations?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-muted-foreground">
+                        This will permanently delete all{" "}
+                        <span className="text-foreground font-semibold">
+                          {registrations.length} team
+                          {registrations.length !== 1 ? "s" : ""}
+                        </span>{" "}
+                        from the tournament. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel
+                        data-ocid="admin.delete_all.cancel_button"
+                        style={{
+                          background: "oklch(0.18 0.01 270)",
+                          border: "1px solid oklch(0.3 0.04 270)",
+                          color: "oklch(0.85 0.01 270)",
+                        }}
+                      >
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        data-ocid="admin.delete_all.confirm_button"
+                        onClick={() => deleteAll()}
+                        style={{
+                          background: "oklch(0.577 0.245 27 / 0.9)",
+                          border: "1px solid oklch(0.577 0.245 27)",
+                          color: "white",
+                        }}
+                      >
+                        Yes, Remove All
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             )}
           </div>
           <p className="text-muted-foreground text-sm">

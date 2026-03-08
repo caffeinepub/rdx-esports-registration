@@ -35,7 +35,7 @@ const homeRoute = createRoute({
 
 const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/admin",
+  path: "/panel",
   component: AdminPage,
 });
 

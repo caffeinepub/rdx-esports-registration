@@ -121,6 +121,7 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     createRegistration(teamName: string, response: string, phoneNumber: string, whatsappLink: string, teamLogoUrl: ExternalBlob | null, playerPhotoUrl: ExternalBlob | null, paymentScreenshotUrl: ExternalBlob | null, proofOfPaymentUrl: ExternalBlob | null, referredBy: string | null): Promise<Registration>;
+    deleteAllRegistrations(): Promise<bigint>;
     deleteRegistration(id: string): Promise<boolean>;
     getRegistration(id: string): Promise<Registration | null>;
     getRegistrationCount(): Promise<bigint>;
@@ -225,6 +226,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.createRegistration(arg0, arg1, arg2, arg3, await to_candid_opt_n8(this._uploadFile, this._downloadFile, arg4), await to_candid_opt_n8(this._uploadFile, this._downloadFile, arg5), await to_candid_opt_n8(this._uploadFile, this._downloadFile, arg6), await to_candid_opt_n8(this._uploadFile, this._downloadFile, arg7), to_candid_opt_n10(this._uploadFile, this._downloadFile, arg8));
             return from_candid_Registration_n11(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async deleteAllRegistrations(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteAllRegistrations();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteAllRegistrations();
+            return result;
         }
     }
     async deleteRegistration(arg0: string): Promise<boolean> {

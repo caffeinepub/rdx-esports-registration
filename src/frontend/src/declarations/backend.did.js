@@ -76,6 +76,7 @@ export const idlService = IDL.Service({
       [Registration],
       [],
     ),
+  'deleteAllRegistrations' : IDL.Func([], [IDL.Nat], []),
   'deleteRegistration' : IDL.Func([IDL.Text], [IDL.Bool], []),
   'getRegistration' : IDL.Func([IDL.Text], [IDL.Opt(Registration)], ['query']),
   'getRegistrationCount' : IDL.Func([], [IDL.Nat], ['query']),
@@ -153,6 +154,7 @@ export const idlFactory = ({ IDL }) => {
         [Registration],
         [],
       ),
+    'deleteAllRegistrations' : IDL.Func([], [IDL.Nat], []),
     'deleteRegistration' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'getRegistration' : IDL.Func(
         [IDL.Text],

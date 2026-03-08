@@ -3,9 +3,7 @@ import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
-import Migration "migration";
 
-(with migration = Migration.run)
 actor {
   type Registration = {
     id : Text;
@@ -91,6 +89,12 @@ actor {
     } else {
       false;
     };
+  };
+
+  public shared ({ caller }) func deleteAllRegistrations() : async Nat {
+    let count = registrations.size();
+    registrations.clear();
+    count;
   };
 
   public query ({ caller }) func getRegistration(id : Text) : async ?Registration {

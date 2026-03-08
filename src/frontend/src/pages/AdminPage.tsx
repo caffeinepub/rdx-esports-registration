@@ -29,6 +29,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import type { Registration } from "../backend";
 import {
+  useDeleteAllRegistrations,
   useDeleteRegistration,
   useListRegistrations,
 } from "../hooks/useQueries";
@@ -200,14 +201,13 @@ function RegistrationCard({
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
-                variant="ghost"
-                size="icon"
+                variant="destructive"
                 data-ocid={`admin.table.row.delete_button.${index + 1}`}
-                className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                className="flex items-center gap-1.5 h-8 px-3 font-display font-bold uppercase tracking-wider text-xs"
                 disabled={isDeleting}
-                title="Remove registration"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3.5 h-3.5" />
+                Remove
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent
@@ -316,6 +316,8 @@ function RegistrationCard({
 
 export function AdminPage() {
   const { data: registrations, isLoading, isError } = useListRegistrations();
+  const { mutate: deleteAll, isPending: isDeletingAll } =
+    useDeleteAllRegistrations();
 
   return (
     <div className="min-h-screen bg-dark-base">
@@ -360,22 +362,83 @@ export function AdminPage() {
       <main className="max-w-6xl mx-auto px-4 py-10 space-y-8">
         {/* Title */}
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <Users className="w-5 h-5 text-gold" />
-            <h1 className="font-display font-black uppercase tracking-widest text-2xl md:text-3xl text-foreground">
-              Registrations
-            </h1>
-            {registrations && (
-              <Badge
-                className="font-display font-bold tracking-wider"
-                style={{
-                  background: "oklch(0.78 0.18 75 / 0.15)",
-                  border: "1px solid oklch(0.78 0.18 75 / 0.4)",
-                  color: "oklch(0.88 0.18 80)",
-                }}
-              >
-                {registrations.length} Teams
-              </Badge>
+          <div className="flex items-center justify-between gap-4 flex-wrap mb-2">
+            <div className="flex items-center gap-3">
+              <Users className="w-5 h-5 text-gold" />
+              <h1 className="font-display font-black uppercase tracking-widest text-2xl md:text-3xl text-foreground">
+                Registrations
+              </h1>
+              {registrations && (
+                <Badge
+                  className="font-display font-bold tracking-wider"
+                  style={{
+                    background: "oklch(0.78 0.18 75 / 0.15)",
+                    border: "1px solid oklch(0.78 0.18 75 / 0.4)",
+                    color: "oklch(0.88 0.18 80)",
+                  }}
+                >
+                  {registrations.length} Teams
+                </Badge>
+              )}
+            </div>
+            {registrations && registrations.length > 0 && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    data-ocid="admin.delete_all.open_modal_button"
+                    className="flex items-center gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 border border-destructive/30 font-display font-bold uppercase tracking-wider text-xs px-3 h-8"
+                    disabled={isDeletingAll}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Remove All
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent
+                  data-ocid="admin.delete_all.dialog"
+                  style={{
+                    background: "oklch(0.12 0.005 270)",
+                    border: "1px solid oklch(0.25 0.04 270)",
+                  }}
+                >
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="font-display font-black uppercase tracking-widest text-foreground">
+                      Remove All Registrations?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-muted-foreground">
+                      This will permanently delete all{" "}
+                      <span className="text-foreground font-semibold">
+                        {registrations.length} team
+                        {registrations.length !== 1 ? "s" : ""}
+                      </span>{" "}
+                      from the tournament. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel
+                      data-ocid="admin.delete_all.cancel_button"
+                      style={{
+                        background: "oklch(0.18 0.01 270)",
+                        border: "1px solid oklch(0.3 0.04 270)",
+                        color: "oklch(0.85 0.01 270)",
+                      }}
+                    >
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      data-ocid="admin.delete_all.confirm_button"
+                      onClick={() => deleteAll()}
+                      style={{
+                        background: "oklch(0.577 0.245 27 / 0.9)",
+                        border: "1px solid oklch(0.577 0.245 27)",
+                        color: "white",
+                      }}
+                    >
+                      Yes, Remove All
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </div>
           <p className="text-muted-foreground text-sm">

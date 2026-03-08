@@ -65,6 +65,7 @@ export interface _SERVICE {
     ],
     Registration
   >,
+  'deleteAllRegistrations' : ActorMethod<[], bigint>,
   'deleteRegistration' : ActorMethod<[string], boolean>,
   'getRegistration' : ActorMethod<[string], [] | [Registration]>,
   'getRegistrationCount' : ActorMethod<[], bigint>,

@@ -54,6 +54,22 @@ export function useDeleteRegistration() {
   });
 }
 
+export function useDeleteAllRegistrations() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation<bigint, Error, void>({
+    mutationFn: async () => {
+      if (!actor) throw new Error("Backend not available");
+      return actor.deleteAllRegistrations();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["registrations"] });
+      queryClient.invalidateQueries({ queryKey: ["registrationCount"] });
+    },
+  });
+}
+
 export function useCreateRegistration() {
   const { actor } = useActor();
   const queryClient = useQueryClient();

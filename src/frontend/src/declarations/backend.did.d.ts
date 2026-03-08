@@ -24,6 +24,12 @@ export interface Registration {
   'registeredAt' : bigint,
   'teamLogoUrl' : [] | [ExternalBlob],
 }
+export interface ShortUrl {
+  'clicks' : bigint,
+  'originalUrl' : string,
+  'code' : string,
+  'createdAt' : bigint,
+}
 export interface _CaffeineStorageCreateCertificateResult {
   'method' : string,
   'blob_hash' : string,
@@ -65,11 +71,15 @@ export interface _SERVICE {
     ],
     Registration
   >,
+  'createShortUrl' : ActorMethod<[string, string], [] | [ShortUrl]>,
   'deleteAllRegistrations' : ActorMethod<[], bigint>,
   'deleteRegistration' : ActorMethod<[string], boolean>,
+  'deleteShortUrl' : ActorMethod<[string], boolean>,
   'getRegistration' : ActorMethod<[string], [] | [Registration]>,
   'getRegistrationCount' : ActorMethod<[], bigint>,
   'listRegistrations' : ActorMethod<[], Array<Registration>>,
+  'listShortUrls' : ActorMethod<[], Array<ShortUrl>>,
+  'resolveShortUrl' : ActorMethod<[string], [] | [string]>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

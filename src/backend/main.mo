@@ -3,7 +3,10 @@ import Nat "mo:core/Nat";
 import Time "mo:core/Time";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
+import Iter "mo:core/Iter";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   type Registration = {
     id : Text;
@@ -19,7 +22,15 @@ actor {
     referredBy : ?Text;
   };
 
+  type ShortUrl = {
+    code : Text;
+    originalUrl : Text;
+    createdAt : Int;
+    clicks : Nat;
+  };
+
   let registrations = Map.empty<Text, Registration>();
+  let shortUrls = Map.empty<Text, ShortUrl>();
 
   var nextId = 1;
 
@@ -48,6 +59,17 @@ actor {
         proofOfPaymentUrl;
         referredBy;
         registeredAt = Time.now();
+      };
+    };
+  };
+
+  module ShortUrl {
+    public func create(code : Text, originalUrl : Text) : ShortUrl {
+      {
+        code;
+        originalUrl;
+        createdAt = Time.now();
+        clicks = 0;
       };
     };
   };
@@ -107,5 +129,39 @@ actor {
 
   public query ({ caller }) func getRegistrationCount() : async Nat {
     registrations.size();
+  };
+
+  public shared ({ caller }) func createShortUrl(code : Text, originalUrl : Text) : async ?ShortUrl {
+    if (shortUrls.containsKey(code)) {
+      null;
+    } else {
+      let shortUrl = ShortUrl.create(code, originalUrl);
+      shortUrls.add(code, shortUrl);
+      ?shortUrl;
+    };
+  };
+
+  public shared ({ caller }) func resolveShortUrl(code : Text) : async ?Text {
+    switch (shortUrls.get(code)) {
+      case (?shortUrl) {
+        let updatedShortUrl = { shortUrl with clicks = shortUrl.clicks + 1 };
+        shortUrls.add(code, updatedShortUrl);
+        ?shortUrl.originalUrl;
+      };
+      case (null) { null };
+    };
+  };
+
+  public query ({ caller }) func listShortUrls() : async [ShortUrl] {
+    shortUrls.values().toArray();
+  };
+
+  public shared ({ caller }) func deleteShortUrl(code : Text) : async Bool {
+    if (shortUrls.containsKey(code)) {
+      shortUrls.remove(code);
+      true;
+    } else {
+      false;
+    };
   };
 };

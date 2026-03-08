@@ -33,6 +33,12 @@ export const Registration = IDL.Record({
   'registeredAt' : IDL.Int,
   'teamLogoUrl' : IDL.Opt(ExternalBlob),
 });
+export const ShortUrl = IDL.Record({
+  'clicks' : IDL.Nat,
+  'originalUrl' : IDL.Text,
+  'code' : IDL.Text,
+  'createdAt' : IDL.Int,
+});
 
 export const idlService = IDL.Service({
   '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -76,11 +82,15 @@ export const idlService = IDL.Service({
       [Registration],
       [],
     ),
+  'createShortUrl' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(ShortUrl)], []),
   'deleteAllRegistrations' : IDL.Func([], [IDL.Nat], []),
   'deleteRegistration' : IDL.Func([IDL.Text], [IDL.Bool], []),
+  'deleteShortUrl' : IDL.Func([IDL.Text], [IDL.Bool], []),
   'getRegistration' : IDL.Func([IDL.Text], [IDL.Opt(Registration)], ['query']),
   'getRegistrationCount' : IDL.Func([], [IDL.Nat], ['query']),
   'listRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
+  'listShortUrls' : IDL.Func([], [IDL.Vec(ShortUrl)], ['query']),
+  'resolveShortUrl' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
 });
 
 export const idlInitArgs = [];
@@ -110,6 +120,12 @@ export const idlFactory = ({ IDL }) => {
     'phoneNumber' : IDL.Text,
     'registeredAt' : IDL.Int,
     'teamLogoUrl' : IDL.Opt(ExternalBlob),
+  });
+  const ShortUrl = IDL.Record({
+    'clicks' : IDL.Nat,
+    'originalUrl' : IDL.Text,
+    'code' : IDL.Text,
+    'createdAt' : IDL.Int,
   });
   
   return IDL.Service({
@@ -154,8 +170,10 @@ export const idlFactory = ({ IDL }) => {
         [Registration],
         [],
       ),
+    'createShortUrl' : IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(ShortUrl)], []),
     'deleteAllRegistrations' : IDL.Func([], [IDL.Nat], []),
     'deleteRegistration' : IDL.Func([IDL.Text], [IDL.Bool], []),
+    'deleteShortUrl' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'getRegistration' : IDL.Func(
         [IDL.Text],
         [IDL.Opt(Registration)],
@@ -163,6 +181,8 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getRegistrationCount' : IDL.Func([], [IDL.Nat], ['query']),
     'listRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
+    'listShortUrls' : IDL.Func([], [IDL.Vec(ShortUrl)], ['query']),
+    'resolveShortUrl' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
   });
 };
 

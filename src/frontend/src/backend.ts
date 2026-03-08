@@ -89,6 +89,12 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface ShortUrl {
+    clicks: bigint;
+    originalUrl: string;
+    code: string;
+    createdAt: bigint;
+}
 export interface Registration {
     id: string;
     teamName: string;
@@ -121,13 +127,17 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     createRegistration(teamName: string, response: string, phoneNumber: string, whatsappLink: string, teamLogoUrl: ExternalBlob | null, playerPhotoUrl: ExternalBlob | null, paymentScreenshotUrl: ExternalBlob | null, proofOfPaymentUrl: ExternalBlob | null, referredBy: string | null): Promise<Registration>;
+    createShortUrl(code: string, originalUrl: string): Promise<ShortUrl | null>;
     deleteAllRegistrations(): Promise<bigint>;
     deleteRegistration(id: string): Promise<boolean>;
+    deleteShortUrl(code: string): Promise<boolean>;
     getRegistration(id: string): Promise<Registration | null>;
     getRegistrationCount(): Promise<bigint>;
     listRegistrations(): Promise<Array<Registration>>;
+    listShortUrls(): Promise<Array<ShortUrl>>;
+    resolveShortUrl(code: string): Promise<string | null>;
 }
-import type { ExternalBlob as _ExternalBlob, Registration as _Registration, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { ExternalBlob as _ExternalBlob, Registration as _Registration, ShortUrl as _ShortUrl, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -228,6 +238,20 @@ export class Backend implements backendInterface {
             return from_candid_Registration_n11(this._uploadFile, this._downloadFile, result);
         }
     }
+    async createShortUrl(arg0: string, arg1: string): Promise<ShortUrl | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.createShortUrl(arg0, arg1);
+                return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.createShortUrl(arg0, arg1);
+            return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async deleteAllRegistrations(): Promise<bigint> {
         if (this.processError) {
             try {
@@ -256,18 +280,32 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async deleteShortUrl(arg0: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteShortUrl(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteShortUrl(arg0);
+            return result;
+        }
+    }
     async getRegistration(arg0: string): Promise<Registration | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getRegistration(arg0);
-                return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getRegistration(arg0);
-            return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
         }
     }
     async getRegistrationCount(): Promise<bigint> {
@@ -288,14 +326,42 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.listRegistrations();
-                return from_candid_vec_n17(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n18(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.listRegistrations();
-            return from_candid_vec_n17(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n18(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async listShortUrls(): Promise<Array<ShortUrl>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listShortUrls();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listShortUrls();
+            return result;
+        }
+    }
+    async resolveShortUrl(arg0: string): Promise<string | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.resolveShortUrl(arg0);
+                return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.resolveShortUrl(arg0);
+            return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
         }
     }
 }
@@ -314,7 +380,10 @@ async function from_candid_opt_n13(_uploadFile: (file: ExternalBlob) => Promise<
 function from_candid_opt_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
-async function from_candid_opt_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Registration]): Promise<Registration | null> {
+function from_candid_opt_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_ShortUrl]): ShortUrl | null {
+    return value.length === 0 ? null : value[0];
+}
+async function from_candid_opt_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Registration]): Promise<Registration | null> {
     return value.length === 0 ? null : await from_candid_Registration_n11(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
@@ -374,7 +443,7 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
         topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
     };
 }
-async function from_candid_vec_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Registration>): Promise<Array<Registration>> {
+async function from_candid_vec_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Registration>): Promise<Array<Registration>> {
     return await Promise.all(value.map(async (x)=>await from_candid_Registration_n11(_uploadFile, _downloadFile, x)));
 }
 async function to_candid_ExternalBlob_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {

@@ -8,6 +8,8 @@ import {
 } from "@tanstack/react-router";
 import { AdminPage } from "./pages/AdminPage";
 import { HomePage } from "./pages/HomePage";
+import { RedirectPage } from "./pages/RedirectPage";
+import { ShortenPage } from "./pages/ShortenPage";
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -39,7 +41,24 @@ const adminRoute = createRoute({
   component: AdminPage,
 });
 
-const routeTree = rootRoute.addChildren([homeRoute, adminRoute]);
+const shortenRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/shorten",
+  component: ShortenPage,
+});
+
+const redirectRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/r/$code",
+  component: RedirectPage,
+});
+
+const routeTree = rootRoute.addChildren([
+  homeRoute,
+  adminRoute,
+  shortenRoute,
+  redirectRoute,
+]);
 
 const router = createRouter({ routeTree });
 

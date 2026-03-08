@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ExternalBlob, type Registration } from "../backend";
+import { ExternalBlob, type Registration, type ShortUrl } from "../backend";
 import { useActor } from "./useActor";
 
 export function useListRegistrations() {
@@ -66,6 +66,66 @@ export function useDeleteAllRegistrations() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["registrations"] });
       queryClient.invalidateQueries({ queryKey: ["registrationCount"] });
+    },
+  });
+}
+
+// ── Short URL hooks ───────────────────────────────────────────
+
+function generateCode(): string {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
+
+export function useListShortUrls() {
+  const { actor, isFetching } = useActor();
+  return useQuery<ShortUrl[]>({
+    queryKey: ["shortUrls"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.listShortUrls();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export interface CreateShortUrlParams {
+  originalUrl: string;
+}
+
+export function useCreateShortUrl() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation<ShortUrl, Error, CreateShortUrlParams>({
+    mutationFn: async ({ originalUrl }) => {
+      if (!actor) throw new Error("Backend not available");
+      const code = generateCode();
+      const result = await actor.createShortUrl(code, originalUrl);
+      if (!result) throw new Error("Failed to create short URL");
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shortUrls"] });
+    },
+  });
+}
+
+export function useDeleteShortUrl() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation<boolean, Error, string>({
+    mutationFn: async (code: string) => {
+      if (!actor) throw new Error("Backend not available");
+      return actor.deleteShortUrl(code);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shortUrls"] });
     },
   });
 }

@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   ChevronDown,
   CreditCard,
+  Link2,
   Lock,
   MessageCircle,
   Phone,
@@ -208,26 +209,51 @@ export function HomePage() {
           }}
         />
 
-        {/* Admin Login Button — top-right */}
-        <motion.button
-          data-ocid="home.admin_login.open_modal_button"
+        {/* Top-right controls */}
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1, duration: 0.4 }}
-          onClick={() => setAdminModalOpen(true)}
-          className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-2 rounded-md font-display font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:scale-105 active:scale-95"
-          style={{
-            background: "oklch(0.10 0.005 270 / 0.85)",
-            border: "1px solid oklch(0.78 0.18 75 / 0.5)",
-            color: "oklch(0.78 0.18 75)",
-            boxShadow:
-              "0 0 12px oklch(0.78 0.18 75 / 0.15), inset 0 0 8px oklch(0.78 0.18 75 / 0.05)",
-            backdropFilter: "blur(8px)",
-          }}
+          className="absolute top-4 right-4 z-20 flex items-center gap-2"
         >
-          <Shield className="w-3 h-3" />
-          ADMIN
-        </motion.button>
+          {/* URL Shortener link */}
+          <a
+            href="/shorten"
+            data-ocid="home.shorten.link"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-md font-display font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              background: "oklch(0.10 0.005 270 / 0.85)",
+              border: "1px solid oklch(0.55 0.25 22 / 0.5)",
+              color: "oklch(0.72 0.20 22)",
+              boxShadow:
+                "0 0 12px oklch(0.55 0.25 22 / 0.15), inset 0 0 8px oklch(0.55 0.25 22 / 0.05)",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            <Link2 className="w-3 h-3" />
+            <span className="hidden sm:inline">Shorten URL</span>
+            <span className="sm:hidden">URL</span>
+          </a>
+
+          {/* Admin button */}
+          <button
+            type="button"
+            data-ocid="home.admin_login.open_modal_button"
+            onClick={() => setAdminModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-md font-display font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              background: "oklch(0.10 0.005 270 / 0.85)",
+              border: "1px solid oklch(0.78 0.18 75 / 0.5)",
+              color: "oklch(0.78 0.18 75)",
+              boxShadow:
+                "0 0 12px oklch(0.78 0.18 75 / 0.15), inset 0 0 8px oklch(0.78 0.18 75 / 0.05)",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            <Shield className="w-3 h-3" />
+            ADMIN
+          </button>
+        </motion.div>
 
         {/* Hex grid pattern */}
         <div

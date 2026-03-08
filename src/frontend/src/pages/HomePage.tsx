@@ -51,16 +51,21 @@ const SPONSORS = [
     name: "TG ESPORTS",
     logo: "/assets/uploads/IMG-20260307-WA0006-1.jpg",
     color: "oklch(0.55 0.25 22)",
+    instagram:
+      "https://www.instagram.com/teddy_gaming_54?igsh=MWJmN2piOTNjbzI2ag==",
   },
   {
     name: "KD PAIYAN YT",
     logo: "/assets/uploads/20260205_183034-3.png",
     color: "oklch(0.78 0.18 75)",
+    instagram:
+      "https://www.instagram.com/kd_paiyan_yt_?igsh=MXgxbXYzZWVtdHdqdw==",
   },
   {
     name: "TG PANEL",
     logo: "/assets/uploads/IMG-20260307-WA0005-2.jpg",
     color: "oklch(0.55 0.25 22)",
+    instagram: "https://www.instagram.com/tgpanel13?igsh=MXRtNjJoazI4emRkYw==",
   },
 ];
 
@@ -430,8 +435,12 @@ export function HomePage() {
                   boxShadow: `0 0 20px ${sponsor.color} / 0.1`,
                 }}
               >
-                <div
-                  className="w-24 h-24 rounded-full mx-auto flex items-center justify-center mb-4 overflow-hidden"
+                <a
+                  href={sponsor.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-ocid={`sponsors.${sponsor.name.toLowerCase().replace(/\s+/g, "_")}.link`}
+                  className="block w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden transition-transform duration-200 hover:scale-110 active:scale-95"
                   style={{
                     border: `2px solid ${sponsor.color}`,
                     boxShadow: `0 0 20px ${sponsor.color} / 0.5`,
@@ -442,7 +451,7 @@ export function HomePage() {
                     alt={sponsor.name}
                     className="w-full h-full object-cover"
                   />
-                </div>
+                </a>
                 <h3
                   className="font-display font-black uppercase tracking-widest text-base"
                   style={{ color: sponsor.color }}

@@ -260,14 +260,21 @@ export function HomePage() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="flex justify-center mb-4"
           >
-            <img
-              src="/assets/uploads/20260307_210819-1.png"
-              alt="INFERNO'26"
-              className="w-28 h-28 md:w-36 md:h-36 object-contain"
-              style={{
-                filter: "drop-shadow(0 0 20px oklch(0.78 0.18 75 / 0.5))",
-              }}
-            />
+            <a
+              href="https://www.instagram.com/rdx_esports001?igsh=MXY4a3hlZnVjZ3lhNA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              data-ocid="hero.logo.link"
+            >
+              <img
+                src="/assets/uploads/20260307_210819-1.png"
+                alt="RDX ESPORTS"
+                className="w-28 h-28 md:w-36 md:h-36 object-contain cursor-pointer"
+                style={{
+                  filter: "drop-shadow(0 0 20px oklch(0.78 0.18 75 / 0.5))",
+                }}
+              />
+            </a>
           </motion.div>
 
           <motion.p
@@ -312,7 +319,7 @@ export function HomePage() {
             />
             <Zap className="w-5 h-5 text-crimson" />
             <span className="font-display text-sm uppercase tracking-[0.3em] text-muted-foreground">
-              Tournament
+              CS Tournament
             </span>
             <Zap className="w-5 h-5 text-crimson" />
             <div

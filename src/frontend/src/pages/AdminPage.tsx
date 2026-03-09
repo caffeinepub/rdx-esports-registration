@@ -30,6 +30,7 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import type { Registration } from "../backend";
+import { AdminLogin3D } from "../components/AdminLogin3D";
 import {
   useDeleteAllRegistrations,
   useDeleteRegistration,
@@ -333,11 +334,16 @@ function downloadTeamNamesCSV(registrations: Registration[]) {
 }
 
 export function AdminPage() {
+  const [authenticated, setAuthenticated] = useState(false);
   const { data: registrations, isLoading, isError } = useListRegistrations();
   const { mutate: deleteAll, isPending: isDeletingAll } =
     useDeleteAllRegistrations();
   const { mutate: resetRegistrations, isPending: isResetting } =
     useResetRegistrations();
+
+  if (!authenticated) {
+    return <AdminLogin3D onSuccess={() => setAuthenticated(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-dark-base">

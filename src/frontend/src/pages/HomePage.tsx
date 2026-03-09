@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -15,7 +9,6 @@ import {
   CheckCircle2,
   ChevronDown,
   CreditCard,
-  Lock,
   MessageCircle,
   Phone,
   Shield,
@@ -99,34 +92,6 @@ export function HomePage() {
   );
   const [whatsappJoined, setWhatsappJoined] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-
-  // Admin login state
-  const [adminModalOpen, setAdminModalOpen] = useState(false);
-  const [adminUsername, setAdminUsername] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
-  const [adminLoginError, setAdminLoginError] = useState<string | null>(null);
-
-  const handleAdminLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setAdminLoginError(null);
-    if (adminUsername === "Bhuvi" && adminPassword === "1234") {
-      setAdminModalOpen(false);
-      setAdminUsername("");
-      setAdminPassword("");
-      navigate({ to: "/panel" });
-    } else {
-      setAdminLoginError("Invalid username or password");
-    }
-  };
-
-  const handleAdminModalChange = (open: boolean) => {
-    setAdminModalOpen(open);
-    if (!open) {
-      setAdminUsername("");
-      setAdminPassword("");
-      setAdminLoginError(null);
-    }
-  };
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -221,11 +186,11 @@ export function HomePage() {
           transition={{ delay: 1, duration: 0.4 }}
           className="absolute top-4 right-4 z-20 flex items-center gap-2"
         >
-          {/* Admin button */}
+          {/* Admin button — navigates directly to the 3D login page */}
           <button
             type="button"
-            data-ocid="home.admin_login.open_modal_button"
-            onClick={() => setAdminModalOpen(true)}
+            data-ocid="home.admin.button"
+            onClick={() => navigate({ to: "/panel" })}
             className="flex items-center gap-1.5 px-3 py-2 rounded-md font-display font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:scale-105 active:scale-95"
             style={{
               background: "oklch(0.10 0.005 270 / 0.85)",
@@ -883,141 +848,6 @@ export function HomePage() {
           />
         )}
       </AnimatePresence>
-
-      {/* ── Admin Login Modal ─────────────────────── */}
-      <Dialog open={adminModalOpen} onOpenChange={handleAdminModalChange}>
-        <DialogContent
-          data-ocid="home.admin_login.modal"
-          className="max-w-sm border font-display"
-          style={{
-            background: "oklch(0.10 0.005 270)",
-            border: "1px solid oklch(0.78 0.18 75 / 0.35)",
-            boxShadow:
-              "0 0 40px oklch(0.78 0.18 75 / 0.15), 0 20px 60px oklch(0.05 0 0 / 0.8)",
-          }}
-        >
-          <DialogHeader className="text-center pb-2">
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <Lock
-                className="w-4 h-4"
-                style={{ color: "oklch(0.78 0.18 75)" }}
-              />
-              <DialogTitle
-                className="font-display font-black uppercase tracking-widest text-base"
-                style={{ color: "oklch(0.78 0.18 75)" }}
-              >
-                ADMIN LOGIN
-              </DialogTitle>
-              <Lock
-                className="w-4 h-4"
-                style={{ color: "oklch(0.78 0.18 75)" }}
-              />
-            </div>
-            <div
-              className="h-px w-full mt-1"
-              style={{
-                background:
-                  "linear-gradient(90deg, transparent, oklch(0.78 0.18 75 / 0.4), transparent)",
-              }}
-            />
-          </DialogHeader>
-
-          <form onSubmit={handleAdminLogin} className="space-y-5 pt-2">
-            {/* Username */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="admin-username"
-                className="text-xs font-semibold uppercase tracking-widest flex items-center gap-1.5"
-                style={{ color: "oklch(0.78 0.18 75 / 0.8)" }}
-              >
-                <User className="w-3 h-3" />
-                Username
-              </Label>
-              <Input
-                id="admin-username"
-                data-ocid="home.admin_login.username.input"
-                type="text"
-                value={adminUsername}
-                onChange={(e) => setAdminUsername(e.target.value)}
-                placeholder="Enter username"
-                autoComplete="username"
-                className="font-display font-semibold"
-                style={{
-                  background: "oklch(0.14 0.005 270)",
-                  border: "1px solid oklch(0.78 0.18 75 / 0.25)",
-                  color: "oklch(0.92 0.02 85)",
-                }}
-              />
-            </div>
-
-            {/* Password */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="admin-password"
-                className="text-xs font-semibold uppercase tracking-widest flex items-center gap-1.5"
-                style={{ color: "oklch(0.78 0.18 75 / 0.8)" }}
-              >
-                <Lock className="w-3 h-3" />
-                Password
-              </Label>
-              <Input
-                id="admin-password"
-                data-ocid="home.admin_login.password.input"
-                type="password"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                placeholder="Enter password"
-                autoComplete="current-password"
-                className="font-display font-semibold"
-                style={{
-                  background: "oklch(0.14 0.005 270)",
-                  border: "1px solid oklch(0.78 0.18 75 / 0.25)",
-                  color: "oklch(0.92 0.02 85)",
-                }}
-              />
-            </div>
-
-            {/* Error */}
-            <AnimatePresence>
-              {adminLoginError && (
-                <motion.div
-                  data-ocid="home.admin_login.error_state"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-2 p-3 rounded-md"
-                  style={{
-                    background: "oklch(0.577 0.245 27 / 0.1)",
-                    border: "1px solid oklch(0.577 0.245 27 / 0.4)",
-                  }}
-                >
-                  <AlertTriangle className="w-3.5 h-3.5 text-destructive flex-shrink-0" />
-                  <p className="text-xs text-destructive font-semibold">
-                    {adminLoginError}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Submit */}
-            <Button
-              type="submit"
-              data-ocid="home.admin_login.submit_button"
-              className="w-full font-display font-black uppercase tracking-widest text-sm py-5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-              style={{
-                background:
-                  "linear-gradient(135deg, oklch(0.78 0.18 75), oklch(0.88 0.20 80))",
-                color: "oklch(0.1 0 0)",
-                border: "none",
-                boxShadow: "0 0 20px oklch(0.78 0.18 75 / 0.3)",
-              }}
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              LOGIN
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

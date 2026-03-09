@@ -135,6 +135,7 @@ export interface backendInterface {
     getRegistrationCount(): Promise<bigint>;
     listRegistrations(): Promise<Array<Registration>>;
     listShortUrls(): Promise<Array<ShortUrl>>;
+    resetRegistrations(): Promise<bigint>;
     resolveShortUrl(code: string): Promise<string | null>;
 }
 import type { ExternalBlob as _ExternalBlob, Registration as _Registration, ShortUrl as _ShortUrl, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
@@ -347,6 +348,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.listShortUrls();
+            return result;
+        }
+    }
+    async resetRegistrations(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.resetRegistrations();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.resetRegistrations();
             return result;
         }
     }

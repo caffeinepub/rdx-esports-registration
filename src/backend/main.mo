@@ -1,9 +1,10 @@
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
+import Text "mo:core/Text";
 import Time "mo:core/Time";
+import Iter "mo:core/Iter";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
-import Iter "mo:core/Iter";
 
 
 
@@ -46,7 +47,14 @@ actor {
       proofOfPaymentUrl : ?Storage.ExternalBlob,
       referredBy : ?Text,
     ) : Registration {
-      let id = "RDX-" # (nextId + 1000).toText();
+      let id = if (nextId < 10) {
+        "RDX-00" # nextId.toText();
+      } else if (nextId < 100) {
+        "RDX-0" # nextId.toText();
+      } else {
+        "RDX-" # nextId.toText();
+      };
+
       {
         id;
         teamName;
@@ -163,5 +171,12 @@ actor {
     } else {
       false;
     };
+  };
+
+  public shared ({ caller }) func resetRegistrations() : async Nat {
+    let deletedCount = registrations.size();
+    registrations.clear();
+    nextId := 1;
+    deletedCount;
   };
 };

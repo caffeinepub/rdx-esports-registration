@@ -19,6 +19,7 @@ import {
   ExternalLink,
   Image as ImageIcon,
   Phone,
+  RotateCcw,
   ShieldCheck,
   Trash2,
   UserCheck,
@@ -33,6 +34,7 @@ import {
   useDeleteAllRegistrations,
   useDeleteRegistration,
   useListRegistrations,
+  useResetRegistrations,
 } from "../hooks/useQueries";
 
 function formatDate(ts: bigint): string {
@@ -334,6 +336,8 @@ export function AdminPage() {
   const { data: registrations, isLoading, isError } = useListRegistrations();
   const { mutate: deleteAll, isPending: isDeletingAll } =
     useDeleteAllRegistrations();
+  const { mutate: resetRegistrations, isPending: isResetting } =
+    useResetRegistrations();
 
   return (
     <div className="min-h-screen bg-dark-base">
@@ -466,6 +470,74 @@ export function AdminPage() {
                         }}
                       >
                         Yes, Remove All
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      data-ocid="admin.reset.open_modal_button"
+                      className="flex items-center gap-2 font-display font-bold uppercase tracking-wider text-xs px-3 h-8"
+                      disabled={isResetting}
+                      style={{
+                        color: "oklch(0.78 0.18 65)",
+                        border: "1px solid oklch(0.78 0.18 65 / 0.35)",
+                        background: "oklch(0.78 0.18 65 / 0.08)",
+                      }}
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      Reset &amp; Restart
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent
+                    data-ocid="admin.reset.dialog"
+                    style={{
+                      background: "oklch(0.12 0.005 270)",
+                      border: "1px solid oklch(0.25 0.04 270)",
+                    }}
+                  >
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="font-display font-black uppercase tracking-widest text-foreground">
+                        Reset &amp; Restart Numbering?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-muted-foreground">
+                        This will delete all registered teams and restart the ID
+                        counter from{" "}
+                        <span
+                          className="font-semibold"
+                          style={{ color: "oklch(0.78 0.18 65)" }}
+                        >
+                          RDX-001
+                        </span>
+                        . The next team to register will get ID RDX-001. This
+                        cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel
+                        data-ocid="admin.reset.cancel_button"
+                        style={{
+                          background: "oklch(0.18 0.01 270)",
+                          border: "1px solid oklch(0.3 0.04 270)",
+                          color: "oklch(0.85 0.01 270)",
+                        }}
+                      >
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        data-ocid="admin.reset.confirm_button"
+                        onClick={() => resetRegistrations()}
+                        style={{
+                          background: "oklch(0.68 0.18 65 / 0.9)",
+                          border: "1px solid oklch(0.78 0.18 65)",
+                          color: "oklch(0.10 0.005 270)",
+                          fontWeight: 700,
+                        }}
+                      >
+                        Yes, Reset &amp; Restart
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>

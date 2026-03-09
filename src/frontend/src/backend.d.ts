@@ -43,5 +43,6 @@ export interface backendInterface {
     getRegistrationCount(): Promise<bigint>;
     listRegistrations(): Promise<Array<Registration>>;
     listShortUrls(): Promise<Array<ShortUrl>>;
+    resetRegistrations(): Promise<bigint>;
     resolveShortUrl(code: string): Promise<string | null>;
 }

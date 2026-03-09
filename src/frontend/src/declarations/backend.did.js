@@ -90,6 +90,7 @@ export const idlService = IDL.Service({
   'getRegistrationCount' : IDL.Func([], [IDL.Nat], ['query']),
   'listRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
   'listShortUrls' : IDL.Func([], [IDL.Vec(ShortUrl)], ['query']),
+  'resetRegistrations' : IDL.Func([], [IDL.Nat], []),
   'resolveShortUrl' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
 });
 
@@ -182,6 +183,7 @@ export const idlFactory = ({ IDL }) => {
     'getRegistrationCount' : IDL.Func([], [IDL.Nat], ['query']),
     'listRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
     'listShortUrls' : IDL.Func([], [IDL.Vec(ShortUrl)], ['query']),
+    'resetRegistrations' : IDL.Func([], [IDL.Nat], []),
     'resolveShortUrl' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
   });
 };

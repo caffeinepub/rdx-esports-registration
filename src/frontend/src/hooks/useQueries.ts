@@ -70,6 +70,22 @@ export function useDeleteAllRegistrations() {
   });
 }
 
+export function useResetRegistrations() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation<bigint, Error, void>({
+    mutationFn: async () => {
+      if (!actor) throw new Error("Backend not available");
+      return actor.resetRegistrations();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["registrations"] });
+      queryClient.invalidateQueries({ queryKey: ["registrationCount"] });
+    },
+  });
+}
+
 // ── Short URL hooks ───────────────────────────────────────────
 
 function generateCode(): string {

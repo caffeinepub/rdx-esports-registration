@@ -79,6 +79,7 @@ export interface _SERVICE {
   'getRegistrationCount' : ActorMethod<[], bigint>,
   'listRegistrations' : ActorMethod<[], Array<Registration>>,
   'listShortUrls' : ActorMethod<[], Array<ShortUrl>>,
+  'resetRegistrations' : ActorMethod<[], bigint>,
   'resolveShortUrl' : ActorMethod<[string], [] | [string]>,
 }
 export declare const idlService: IDL.ServiceClass;

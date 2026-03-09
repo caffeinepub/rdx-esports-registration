@@ -40,6 +40,7 @@ const RULES = [
   "NO REFUND",
   "NO ROOF",
   "ONLY FACE TO FACE",
+  "ONLY HEADSHOT",
 ];
 
 const WHATSAPP_GROUP_LINK =

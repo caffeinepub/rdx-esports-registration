@@ -7,6 +7,7 @@ import {
   createRouter,
 } from "@tanstack/react-router";
 import { useState } from "react";
+import { ClickSpark } from "./components/ClickSpark";
 import { SplashScreen } from "./components/SplashScreen";
 import { AdminPage } from "./pages/AdminPage";
 import { HomePage } from "./pages/HomePage";
@@ -20,6 +21,7 @@ function RootLayout() {
     <>
       {!splashDone && <SplashScreen onComplete={() => setSplashDone(true)} />}
       <Outlet />
+      <ClickSpark />
       <Toaster
         position="top-right"
         toastOptions={{
